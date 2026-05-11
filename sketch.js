@@ -1,10 +1,13 @@
 let capture;
 let facemesh;
 let predictions = [];
+let earringImg;
 
 function preload() {
   // 初始化 ml5.js FaceMesh 模型
   facemesh = ml5.faceMesh();
+  // 載入耳環圖片
+  earringImg = loadImage('pic/acc1_ring.png');
 }
 
 function setup() {
@@ -41,18 +44,18 @@ function drawEarlobes(imgWidth, imgHeight) {
     let keypoints = predictions[0].keypoints;
 
     // 在 MediaPipe FaceMesh 中，節點 177 與 401 約略對應左耳垂與右耳垂
-    let leftEar = keypoints[177];
-    let rightEar = keypoints[401];
+    let leftEar = keypoints[132]; //132 , 177
+    let rightEar = keypoints[361];  //361 ,401
 
     // 由於我們調整了影像比例並將其移到了畫布中央 (imageMode CENTER)，
     // 必須將偵測到的原始座標映射到當前對應的縮放比例及座標軸上。
     let mapX = (x) => map(x, 0, capture.width, -imgWidth / 2, imgWidth / 2);
     let mapY = (y) => map(y, 0, capture.height, -imgHeight / 2, imgHeight / 2);
 
-    fill(255, 255, 0); // 設定為黃色
-    noStroke();
-    circle(mapX(leftEar.x), mapY(leftEar.y), 20); // 畫左耳垂
-    circle(mapX(rightEar.x), mapY(rightEar.y), 20); // 畫右耳垂
+    // 繪製耳環圖片 (設定寬高為 40x40，您可以視耳環圖檔的比例自行調整大小)
+    let earringSize = 40;
+    image(earringImg, mapX(leftEar.x), mapY(leftEar.y), earringSize, earringSize); 
+    image(earringImg, mapX(rightEar.x), mapY(rightEar.y), earringSize, earringSize); 
   }
 }
 
